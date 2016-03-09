@@ -8,7 +8,7 @@ var holes = document.querySelectorAll("td");
 
 var buttons = document.querySelectorAll("button");
 
-var SPEED = localStorage.getItem("speed");
+var SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 
 speedNode.innerHTML = SPEED;
 
