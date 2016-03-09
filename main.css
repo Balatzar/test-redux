@@ -1,0 +1,19 @@
+td {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+.active {
+  background: url("./tristan-small.jpg");
+  background-position: center;
+  background-size: contain;
+}
+
+.clicked {
+  background: url("./tristan-geant.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
