@@ -85,10 +85,20 @@ var render = function() {
     location.reload();
   }
 
-  holes[state.hole].classList.toggle(state.clicked ? "clicked" : "active");
+  holes[state.hole].classList.add("active");
+
   setTimeout(function() {
-    holes[state.hole].classList.toggle(state.clicked ? "clicked" : "active");
+    holes[state.hole].classList.remove("active");
   }, SPEED);
+
+  if (state.clicked) {
+    holes[state.hole].classList.remove("active");
+    holes[state.hole].classList.add("clicked");
+
+    setTimeout(function() {
+      holes[state.hole].classList.remove("clicked");
+    }, SPEED);
+  }
 };
 
 var changeSpeed = function() {
