@@ -12,6 +12,8 @@ var game = document.querySelector("table");
 
 var gameStarted = false;
 
+var start;
+
 var SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 
 speedNode.innerHTML = SPEED;
@@ -24,7 +26,6 @@ var whack = function(state, action) {
       points: 0,
       speed: localStorage.getItem("speed"),
       start: false,
-      win: false,
     };
   }
   switch (action.type) {
@@ -35,7 +36,6 @@ var whack = function(state, action) {
           points: state.points,
           speed: state.speed,
           start: state.start,
-          win: state.win,
       };
     case "CLICK_HOLE":
       return {
@@ -44,7 +44,6 @@ var whack = function(state, action) {
           points: state.points + 1,
           speed: state.speed,
           start: state.start,
-          win: state.win,
       };
     case "SET_SPEED":
       return {
@@ -53,7 +52,6 @@ var whack = function(state, action) {
           points: state.points,
           speed: action.speed,
           start: state.start,
-          win: state.win,
       };
     case "START_GAME":
       return {
@@ -62,16 +60,6 @@ var whack = function(state, action) {
           points: state.points,
           speed: state.speed,
           start: true,
-          win: state.win,
-      };
-    case "WIN_GAME":
-      return {
-          hole: state.hole,
-          clicked: state.clicked,
-          points: state.points,
-          speed: state.speed,
-          start: state.start,
-          win: state.win,
       };
     default :
       return state;
@@ -82,6 +70,20 @@ var render = function() {
   var state = store.getState();
 
   points.innerHTML = state.points;
+
+  if (state.points === 10) {
+    var end = new Date();
+    var num = end - start;
+    var seconds = Math.floor(num / 1000);
+    var minutes = Math.floor(seconds / 60);
+    seconds = seconds - (minutes * 60);
+    if (!minutes) {
+      alert("Vous avez gagné en " + seconds + " secondes ! ");
+    } else {
+      alert("Vous avez gagné en " + minutes + " minutes et " + seconds + " secondes !");
+    }
+    location.reload();
+  }
 
   holes[state.hole].classList.toggle(state.clicked ? "clicked" : "active");
   setTimeout(function() {
@@ -103,6 +105,7 @@ var startGame = function() {
 
   if (!gameStarted && gameState) {
     gameStarted = true;
+    start = new Date();
     game.classList.toggle("hidden");
     launch.classList.toggle("hidden");
     setInterval(function() {
