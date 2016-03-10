@@ -66,23 +66,27 @@ var whack = function(state, action) {
   }
 };
 
+var win = function() {
+  var end = new Date();
+  var num = end - start;
+  var seconds = Math.floor(num / 1000);
+  var minutes = Math.floor(seconds / 60);
+  seconds = seconds - (minutes * 60);
+  if (!minutes) {
+    alert("Vous avez gagné en " + seconds + " secondes ! ");
+  } else {
+    alert("Vous avez gagné en " + minutes + " minutes et " + seconds + " secondes !");
+  }
+  location.reload();
+};
+
 var render = function() {
   var state = store.getState();
 
   points.innerHTML = state.points;
 
   if (state.points === 10) {
-    var end = new Date();
-    var num = end - start;
-    var seconds = Math.floor(num / 1000);
-    var minutes = Math.floor(seconds / 60);
-    seconds = seconds - (minutes * 60);
-    if (!minutes) {
-      alert("Vous avez gagné en " + seconds + " secondes ! ");
-    } else {
-      alert("Vous avez gagné en " + minutes + " minutes et " + seconds + " secondes !");
-    }
-    location.reload();
+    win();
   }
 
   holes[state.hole].classList.add("active");
@@ -141,6 +145,9 @@ for (i = 0; i < holes.length; i++) {
 }
 
 for (i = 0; i < buttons.length; i++) {
+  if (buttons[i].value === SPEED) {
+    buttons[i].style = "border: 3px solid red; border-radius: 5px";
+  }
   buttons[i].addEventListener("click", function(e) {
     console.log(e);
     store.dispatch({type: "SET_SPEED", speed: parseInt(e.target.value)});
