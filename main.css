@@ -6,14 +6,31 @@ td {
 }
 
 .active {
-  background: url("./tristan-small.jpg");
+  background: url("./mallory1.jpg");
   background-position: center;
   background-size: contain;
 }
 
 .clicked {
-  background: url("./tristan-geant.jpg");
+  background: url("./mallory2.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.hidden {
+  display: none;
+}
+
+#launch {
+  width: 100px;
+  height: 50px;
+  border: 5px solid #000;
+  cursor: pointer;
+}
+
+#launch h1 {
+  text-align: center;
+  margin: 0;
+  margin-top: 7px;
 }

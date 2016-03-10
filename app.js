@@ -8,6 +8,10 @@ var holes = document.querySelectorAll("td");
 
 var buttons = document.querySelectorAll("button");
 
+var game = document.querySelector("table");
+
+var gameStarted = false;
+
 var SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 
 speedNode.innerHTML = SPEED;
@@ -18,7 +22,9 @@ var whack = function(state, action) {
       hole: Math.floor(Math.random() * 10) % 9,
       clicked: false,
       points: 0,
-      speed: localStorage.getItem("speed")
+      speed: localStorage.getItem("speed"),
+      start: false,
+      win: false,
     };
   }
   switch (action.type) {
@@ -28,6 +34,8 @@ var whack = function(state, action) {
           clicked: false,
           points: state.points,
           speed: state.speed,
+          start: state.start,
+          win: state.win,
       };
     case "CLICK_HOLE":
       return {
@@ -35,6 +43,8 @@ var whack = function(state, action) {
           clicked: true,
           points: state.points + 1,
           speed: state.speed,
+          start: state.start,
+          win: state.win,
       };
     case "SET_SPEED":
       return {
@@ -42,6 +52,26 @@ var whack = function(state, action) {
           clicked: state.clicked,
           points: state.points,
           speed: action.speed,
+          start: state.start,
+          win: state.win,
+      };
+    case "START_GAME":
+      return {
+          hole: state.hole,
+          clicked: state.clicked,
+          points: state.points,
+          speed: state.speed,
+          start: true,
+          win: state.win,
+      };
+    case "WIN_GAME":
+      return {
+          hole: state.hole,
+          clicked: state.clicked,
+          points: state.points,
+          speed: state.speed,
+          start: state.start,
+          win: state.win,
       };
     default :
       return state;
@@ -61,9 +91,23 @@ var render = function() {
 
 var changeSpeed = function() {
   var newSpeed = store.getState().speed;
+
   if (newSpeed !== localStorage.getItem("speed")) {
     localStorage.setItem("speed", newSpeed);
     location.reload();
+  }
+};
+
+var startGame = function() {
+  var gameState = store.getState().start;
+
+  if (!gameStarted && gameState) {
+    gameStarted = true;
+    game.classList.toggle("hidden");
+    launch.classList.toggle("hidden");
+    setInterval(function() {
+      store.dispatch({type: "CHANGE_HOLE"});
+    }, SPEED);
   }
 };
 
@@ -71,6 +115,7 @@ var store = Redux.createStore(whack);
 
 store.subscribe(render);
 store.subscribe(changeSpeed);
+store.subscribe(startGame);
 
 var i;
 
@@ -89,8 +134,8 @@ for (i = 0; i < buttons.length; i++) {
   });
 }
 
-  setInterval(function() {
-    store.dispatch({type: "CHANGE_HOLE"});
-  }, SPEED);
+launch.addEventListener("click", function() {
+  store.dispatch({type: "START_GAME"});
+});
 
 })();
