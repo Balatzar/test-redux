@@ -17,7 +17,7 @@ let start;
 let SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 let DIFFICULTY = localStorage.getItem("difficulty") ? localStorage.getItem("difficulty") : "Moyen";
 
-const whack = function(state, action) {
+const whack = (state, action) => {
   if (!state) {
     return {
       hole: Math.floor(Math.random() * 10) % 9,
@@ -72,7 +72,7 @@ const whack = function(state, action) {
 
 const store = Redux.createStore(whack);
 
-const win = function() {
+const win = () => {
   const end = new Date();
   let num = end - start;
   let seconds = Math.floor(num / 1000);
@@ -80,8 +80,8 @@ const win = function() {
   seconds = seconds - (minutes * 60);
   
   const score = {
-    seconds: seconds,
-    minutes: minutes,
+    seconds,
+    minutes,
     difficulty: DIFFICULTY
   };
 
@@ -105,7 +105,7 @@ const win = function() {
   location.reload();
 };
 
-var initialRender = function() {
+var initialRender = () => {
   const scores = JSON.parse(localStorage.getItem("scores"));
 
   speedNode.innerHTML = SPEED;
@@ -133,7 +133,7 @@ var initialRender = function() {
   }
 };
 
-const render = function() {
+const render = () => {
   const state = store.getState();
 
   points.innerHTML = state.points;
@@ -158,7 +158,7 @@ const render = function() {
   }
 };
 
-const changeSpeed = function() {
+const changeSpeed = () => {
   const newSpeed = store.getState().speed;
   const newDifficulty = store.getState().difficulty;
 
@@ -169,7 +169,7 @@ const changeSpeed = function() {
   }
 };
 
-const startGame = function() {
+const startGame = () => {
   const gameState = store.getState().start;
 
   if (!gameStarted && gameState) {
@@ -177,7 +177,7 @@ const startGame = function() {
     start = new Date();
     game.classList.toggle("hidden");
     launch.classList.toggle("hidden");
-    setInterval(function() {
+    setInterval(() => {
       store.dispatch({type: "CHANGE_HOLE"});
     }, SPEED);
   }
@@ -190,7 +190,7 @@ store.subscribe(startGame);
 let i;
 
 for (i = 0; i < holes.length; i++) {
-  holes[i].addEventListener("click", function(e) {
+  holes[i].addEventListener("click", e => {
     if (e.target.classList.contains("active")) {
       store.dispatch({type: "CLICK_HOLE"});
     }
@@ -206,8 +206,8 @@ for (i = 0; i < buttons.length; i++) {
   });
 }
 
-launch.addEventListener("click", function() {
-  store.dispatch({type: "START_GAME"})
+launch.addEventListener("click", () => {
+  store.dispatch({type: "START_GAME"});
 });
 
 initialRender();
