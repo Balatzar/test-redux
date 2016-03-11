@@ -207,7 +207,7 @@ for (i = 0; i < buttons.length; i++) {
 }
 
 launch.addEventListener("click", function() {
-  store.dispatch({type: "START_GAME"});
+  store.dispatch({type: "START_GAME"})
 });
 
 initialRender();
