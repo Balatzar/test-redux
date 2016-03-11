@@ -12,6 +12,8 @@ const game = document.querySelector("table");
 
 let gameStarted = false;
 
+let gameWon = false;
+
 let start;
 
 let SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
@@ -73,6 +75,8 @@ const whack = (state, action) => {
 const store = Redux.createStore(whack);
 
 const win = () => {
+  gameWon = true;
+
   const end = new Date();
   let num = end - start;
   let seconds = Math.floor(num / 1000);
@@ -138,7 +142,7 @@ const render = () => {
 
   points.innerHTML = state.points;
 
-  if (state.points === 10) {
+  if (state.points === 10 && !gameWon) {
     win(state.difficulty);
   }
 
