@@ -17,8 +17,6 @@ var start;
 var SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 var DIFFICULTY = localStorage.getItem("difficulty") ? localStorage.getItem("difficulty") : "Moyen";
 
-speedNode.innerHTML = SPEED;
-
 var whack = function(state, action) {
   if (!state) {
     return {
@@ -78,6 +76,7 @@ var win = function() {
   var seconds = Math.floor(num / 1000);
   var minutes = Math.floor(seconds / 60);
   seconds = seconds - (minutes * 60);
+  
   var score = {
     seconds: seconds,
     minutes: minutes,
@@ -94,16 +93,20 @@ var win = function() {
     temp.push(score);
     localStorage.setItem("scores", JSON.stringify(temp));
   }
+
   if (!minutes) {
     alert("Vous avez gagné en " + seconds + " secondes ! ");
   } else {
     alert("Vous avez gagné en " + minutes + " minutes et " + seconds + " secondes !");
   }
+
   location.reload();
 };
 
 var initialRender = function() {
   var scores = JSON.parse(localStorage.getItem("scores"));
+
+  speedNode.innerHTML = SPEED;
 
   if (scores) {
     highlights.classList.remove("hidden");
