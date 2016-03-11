@@ -1,23 +1,23 @@
-// jshint loopfunc: true
+// jshint loopfunc: true, esversion: 6
 
 (function() {
 
 "use strict";
 
-var holes = document.querySelectorAll("td");
+const holes = document.querySelectorAll("td");
 
-var buttons = document.querySelectorAll("button");
+const buttons = document.querySelectorAll("button");
 
-var game = document.querySelector("table");
+const game = document.querySelector("table");
 
-var gameStarted = false;
+let gameStarted = false;
 
-var start;
+let start;
 
-var SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
-var DIFFICULTY = localStorage.getItem("difficulty") ? localStorage.getItem("difficulty") : "Moyen";
+let SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
+let DIFFICULTY = localStorage.getItem("difficulty") ? localStorage.getItem("difficulty") : "Moyen";
 
-var whack = function(state, action) {
+const whack = function(state, action) {
   if (!state) {
     return {
       hole: Math.floor(Math.random() * 10) % 9,
@@ -70,26 +70,28 @@ var whack = function(state, action) {
   }
 };
 
-var win = function() {
-  var end = new Date();
-  var num = end - start;
-  var seconds = Math.floor(num / 1000);
-  var minutes = Math.floor(seconds / 60);
+const store = Redux.createStore(whack);
+
+const win = function() {
+  const end = new Date();
+  let num = end - start;
+  let seconds = Math.floor(num / 1000);
+  let minutes = Math.floor(seconds / 60);
   seconds = seconds - (minutes * 60);
   
-  var score = {
+  const score = {
     seconds: seconds,
     minutes: minutes,
     difficulty: DIFFICULTY
   };
 
   if (JSON.parse(localStorage.getItem("scores"))) {
-    var oldScores = JSON.parse(localStorage.getItem("scores"));
-    var newScores = oldScores;
+    const oldScores = JSON.parse(localStorage.getItem("scores"));
+    const newScores = oldScores;
     newScores.push(score);
     localStorage.setItem("scores", JSON.stringify(newScores));
   } else {
-    var temp = [];
+    const temp = [];
     temp.push(score);
     localStorage.setItem("scores", JSON.stringify(temp));
   }
@@ -104,17 +106,17 @@ var win = function() {
 };
 
 var initialRender = function() {
-  var scores = JSON.parse(localStorage.getItem("scores"));
+  const scores = JSON.parse(localStorage.getItem("scores"));
 
   speedNode.innerHTML = SPEED;
 
   if (scores) {
     highlights.classList.remove("hidden");
-    var ul = document.querySelector("ul");
+    const ul = document.querySelector("ul");
     scores.forEach(function(score) {
-      var li = document.createElement("li");
+      const li = document.createElement("li");
 
-      var text = "";
+      let text = "";
 
       if (score.minutes) {
         text += score.minutes + " minutes ";
@@ -124,15 +126,15 @@ var initialRender = function() {
 
       text += " - " + score.difficulty;
 
-      var textNode = document.createTextNode(text);
+      const textNode = document.createTextNode(text);
       li.appendChild(textNode);
       ul.appendChild(li);
     });
   }
 };
 
-var render = function() {
-  var state = store.getState();
+const render = function() {
+  const state = store.getState();
 
   points.innerHTML = state.points;
 
@@ -156,9 +158,9 @@ var render = function() {
   }
 };
 
-var changeSpeed = function() {
-  var newSpeed = store.getState().speed;
-  var newDifficulty = store.getState().difficulty;
+const changeSpeed = function() {
+  const newSpeed = store.getState().speed;
+  const newDifficulty = store.getState().difficulty;
 
   if (newSpeed !== localStorage.getItem("speed")) {
     localStorage.setItem("speed", newSpeed);
@@ -167,8 +169,8 @@ var changeSpeed = function() {
   }
 };
 
-var startGame = function() {
-  var gameState = store.getState().start;
+const startGame = function() {
+  const gameState = store.getState().start;
 
   if (!gameStarted && gameState) {
     gameStarted = true;
@@ -181,13 +183,11 @@ var startGame = function() {
   }
 };
 
-var store = Redux.createStore(whack);
-
 store.subscribe(render);
 store.subscribe(changeSpeed);
 store.subscribe(startGame);
 
-var i;
+let i;
 
 for (i = 0; i < holes.length; i++) {
   holes[i].addEventListener("click", function(e) {
