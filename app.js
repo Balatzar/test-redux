@@ -19,6 +19,26 @@ let start;
 let SPEED = localStorage.getItem("speed") ? localStorage.getItem("speed") : 600;
 let DIFFICULTY = localStorage.getItem("difficulty") ? localStorage.getItem("difficulty") : "Moyen";
 
+const createStore = reducer => {
+  let state;
+  let listeners = [];
+
+  const getState = () => state;
+
+  const dispatch = action => {
+    state = reducer(state, action);
+    listeners.forEach(listener => listener());
+  };
+
+  const subscribe = listener => {
+    listeners.push(listener);
+  };
+
+  dispatch({});
+
+  return { getState, dispatch, subscribe };
+};
+
 const whack = (state, action) => {
   if (!state) {
     return {
@@ -72,7 +92,7 @@ const whack = (state, action) => {
   }
 };
 
-const store = Redux.createStore(whack);
+const store = createStore(whack);
 
 const win = () => {
   gameWon = true;
