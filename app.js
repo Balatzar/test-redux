@@ -26,8 +26,18 @@ const createStore = reducer => {
   const getState = () => state;
 
   const dispatch = action => {
+   // debugger
     state = reducer(state, action);
-    listeners.forEach(listener => listener());
+
+    let i, j;
+
+    for (i = 0; i < listeners.length; i++) {
+        for (j = 0; j < listeners[i].actions.length; j++) {
+          if (listeners[i].actions[j] === action.type) {
+            listeners[i].effect();
+          }
+        }
+    }
   };
 
   const subscribe = listener => {
@@ -102,7 +112,7 @@ const win = () => {
   let seconds = Math.floor(num / 1000);
   let minutes = Math.floor(seconds / 60);
   seconds = seconds - (minutes * 60);
-  
+
   const score = {
     seconds,
     minutes,
@@ -207,9 +217,9 @@ const startGame = () => {
   }
 };
 
-store.subscribe(render);
-store.subscribe(changeSpeed);
-store.subscribe(startGame);
+store.subscribe({ effect: render, actions: ["CHANGE_HOLE", "CLICK_HOLE"]});
+store.subscribe({ effect: changeSpeed, actions: ["SET_SPEED"] });
+store.subscribe({ effect: startGame, actions: ["START_GAME"] });
 
 let i;
 
